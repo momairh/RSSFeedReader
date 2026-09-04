@@ -63,7 +63,7 @@ specs/001-mvp-rss-reader/
 ### Source Code (repository root)
 
 ```text
-RSSFeedReader.sln
+RSSFeedReader.slnx
 backend/
 └── RSSFeedReader.Api/
     ├── Models/
@@ -145,3 +145,4 @@ Feed fetching/parsing (`System.ServiceModel.Syndication`), manual refresh, item 
 ## Complexity Tracking
 
 *No constitution deviations. This section is intentionally empty.*
+

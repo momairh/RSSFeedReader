@@ -12,7 +12,7 @@
 
 ```text
 RSSFeedReader/
-├── RSSFeedReader.sln
+├── RSSFeedReader.slnx
 ├── backend/RSSFeedReader.Api/     # ASP.NET Core Web API - http://localhost:5151
 └── frontend/RSSFeedReader.UI/     # Blazor WebAssembly    - http://localhost:5213
 ```
@@ -22,7 +22,7 @@ RSSFeedReader/
 From the repository root:
 
 ```powershell
-dotnet build RSSFeedReader.sln
+dotnet build RSSFeedReader.slnx
 ```
 
 Expected result: build succeeds with 0 errors.
@@ -93,3 +93,4 @@ curl -X POST http://localhost:5151/api/subscriptions -H "Content-Type: applicati
 ## What is not included
 
 No feed fetching, parsing, item display, refresh, deletion, or persistence. Those are Extended-MVP and post-MVP scope.
+

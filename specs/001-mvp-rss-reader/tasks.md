@@ -10,42 +10,42 @@
 
 ## Phase 1: Setup (project initialization)
 
-- [ ] **T001** Create the solution file `RSSFeedReader.sln` at the repository root.
-- [ ] **T002** Create the ASP.NET Core Web API project at `backend/RSSFeedReader.Api` targeting .NET 8 (`dotnet new webapi -o backend/RSSFeedReader.Api -f net8.0 --use-controllers`).
-- [ ] **T003** Create the Blazor WebAssembly project at `frontend/RSSFeedReader.UI` targeting .NET 8 (`dotnet new blazorwasm -o frontend/RSSFeedReader.UI -f net8.0`).
-- [ ] **T004** Add both projects to `RSSFeedReader.sln`.
-- [ ] **T005** Add a `.gitignore` covering `bin/`, `obj/`, and IDE artifacts.
-- [ ] **T006** Verify the baseline: `dotnet build RSSFeedReader.sln` completes with 0 errors. **Gate** (Constitution V).
+- [x] **T001** Create the solution file `RSSFeedReader.slnx` at the repository root.
+- [x] **T002** Create the ASP.NET Core Web API project at `backend/RSSFeedReader.Api` targeting .NET 8 (`dotnet new webapi -o backend/RSSFeedReader.Api -f net8.0 --use-controllers`).
+- [x] **T003** Create the Blazor WebAssembly project at `frontend/RSSFeedReader.UI` targeting .NET 8 (`dotnet new blazorwasm -o frontend/RSSFeedReader.UI -f net8.0`).
+- [x] **T004** Add both projects to `RSSFeedReader.slnx`.
+- [x] **T005** Add a `.gitignore` covering `bin/`, `obj/`, and IDE artifacts.
+- [x] **T006** Verify the baseline: `dotnet build RSSFeedReader.slnx` completes with 0 errors. **Gate** (Constitution V).
 
 ---
 
 ## Phase 2: Foundational (BLOCKING - must complete before any user story work)
 
-- [ ] **T007** Delete Blazor template demo pages: `frontend/RSSFeedReader.UI/Pages/Home.razor`, `Pages/Counter.razor`, `Pages/Weather.razor`.
+- [x] **T007** Delete Blazor template demo pages: `frontend/RSSFeedReader.UI/Pages/Home.razor`, `Pages/Counter.razor`, `Pages/Weather.razor`.
   - Blocks: T008, and all of Phase 4.
-- [ ] **T008** Update `frontend/RSSFeedReader.UI/Layout/NavMenu.razor`: remove nav links to the deleted demo pages and add a single "Subscriptions" link pointing at `/`.
+- [x] **T008** Update `frontend/RSSFeedReader.UI/Layout/NavMenu.razor`: remove nav links to the deleted demo pages and add a single "Subscriptions" link pointing at `/`.
   - Depends on: T007.
-- [ ] **T009** **Verification gate**: confirm no `Home.razor`/`Counter.razor`/`Weather.razor` remain and that exactly ONE component declares `@page "/"`.
+- [x] **T009** **Verification gate**: confirm no `Home.razor`/`Counter.razor`/`Weather.razor` remain and that exactly ONE component declares `@page "/"`.
   - `Get-ChildItem frontend/RSSFeedReader.UI/Pages -Filter *.razor | Select-Object Name`
   - `Select-String -Path frontend/RSSFeedReader.UI/**/*.razor -Pattern '@page "/"'`
   - Depends on: T007, T008. **Do not start Phase 3 or 4 until this passes** (Constitution V, research R8).
-- [ ] **T010** [P] Configure the backend port in `backend/RSSFeedReader.Api/Properties/launchSettings.json` to `http://localhost:5151`.
-- [ ] **T011** [P] Configure the frontend port in `frontend/RSSFeedReader.UI/Properties/launchSettings.json` to `http://localhost:5213`.
-- [ ] **T012** Create `frontend/RSSFeedReader.UI/wwwroot/appsettings.json` with `{ "ApiBaseUrl": "http://localhost:5151/api/" }` (FR-014, Constitution IV).
+- [x] **T010** [P] Configure the backend port in `backend/RSSFeedReader.Api/Properties/launchSettings.json` to `http://localhost:5151`.
+- [x] **T011** [P] Configure the frontend port in `frontend/RSSFeedReader.UI/Properties/launchSettings.json` to `http://localhost:5213`.
+- [x] **T012** Create `frontend/RSSFeedReader.UI/wwwroot/appsettings.json` with `{ "ApiBaseUrl": "http://localhost:5151/api/" }` (FR-014, Constitution IV).
   - Depends on: T010.
-- [ ] **T013** In `frontend/RSSFeedReader.UI/Program.cs`, read `ApiBaseUrl` from configuration with a documented fallback and register an `HttpClient` with that base address.
+- [x] **T013** In `frontend/RSSFeedReader.UI/Program.cs`, read `ApiBaseUrl` from configuration with a documented fallback and register an `HttpClient` with that base address.
   - Depends on: T012.
-- [ ] **T014** In `backend/RSSFeedReader.Api/Program.cs`, add a named CORS policy allowing origin `http://localhost:5213` (any header, any method) and apply it in the middleware pipeline before controller mapping (research R6).
+- [x] **T014** In `backend/RSSFeedReader.Api/Program.cs`, add a named CORS policy allowing origin `http://localhost:5213` (any header, any method) and apply it in the middleware pipeline before controller mapping (research R6).
   - Depends on: T011.
-- [ ] **T015** Create `backend/RSSFeedReader.Api/Models/Subscription.cs` with `Id` (Guid), `Url` (string), `AddedAt` (DateTimeOffset) per data-model.md (FR-011).
-- [ ] **T016** Create `backend/RSSFeedReader.Api/Services/ISubscriptionStore.cs` declaring `IReadOnlyList<Subscription> GetAll()` and `Subscription Add(string url)` (Constitution II).
+- [x] **T015** Create `backend/RSSFeedReader.Api/Models/Subscription.cs` with `Id` (Guid), `Url` (string), `AddedAt` (DateTimeOffset) per data-model.md (FR-011).
+- [x] **T016** Create `backend/RSSFeedReader.Api/Services/ISubscriptionStore.cs` declaring `IReadOnlyList<Subscription> GetAll()` and `Subscription Add(string url)` (Constitution II).
   - Depends on: T015.
-- [ ] **T017** Create `backend/RSSFeedReader.Api/Services/InMemorySubscriptionStore.cs`: `List<Subscription>` guarded by a lock, `GetAll()` returns a snapshot preserving insertion order, `Add()` trims the URL and appends (FR-009, FR-010, concurrency edge case).
+- [x] **T017** Create `backend/RSSFeedReader.Api/Services/InMemorySubscriptionStore.cs`: `List<Subscription>` guarded by a lock, `GetAll()` returns a snapshot preserving insertion order, `Add()` trims the URL and appends (FR-009, FR-010, concurrency edge case).
   - Depends on: T016.
-- [ ] **T018** Register `ISubscriptionStore` → `InMemorySubscriptionStore` as a **singleton** in `backend/RSSFeedReader.Api/Program.cs`, and ensure `AddControllers()` / `MapControllers()` are wired (FR-010).
+- [x] **T018** Register `ISubscriptionStore` → `InMemorySubscriptionStore` as a **singleton** in `backend/RSSFeedReader.Api/Program.cs`, and ensure `AddControllers()` / `MapControllers()` are wired (FR-010).
   - Depends on: T017.
-- [ ] **T019** Remove the `WeatherForecast` template artifacts from the API project (model and controller) so only feature code remains.
-- [ ] **T020** Build gate: `dotnet build RSSFeedReader.sln` completes with 0 errors.
+- [x] **T019** Remove the `WeatherForecast` template artifacts from the API project (model and controller) so only feature code remains.
+- [x] **T020** Build gate: `dotnet build RSSFeedReader.slnx` completes with 0 errors.
   - Depends on: T007-T019.
 
 **Checkpoint**: Both applications start, the frontend loads without routing errors, and the storage abstraction is available for injection.
@@ -57,39 +57,39 @@
 **Goal**: A user can submit a feed URL and have it accepted and stored.
 **Independent test**: POST a URL through the UI and confirm it is accepted and appears in the list.
 
-- [ ] **T021** Create `backend/RSSFeedReader.Api/Models/AddSubscriptionRequest.cs` with a single `Url` string property (contract: POST body).
-- [ ] **T022** [P] Create `backend/RSSFeedReader.Api/Models/SubscriptionResponse.cs` with `Id`, `Url`, `AddedAt` and a mapping helper from `Subscription` (contract: response schema).
+- [x] **T021** Create `backend/RSSFeedReader.Api/Models/AddSubscriptionRequest.cs` with a single `Url` string property (contract: POST body).
+- [x] **T022** [P] Create `backend/RSSFeedReader.Api/Models/SubscriptionResponse.cs` with `Id`, `Url`, `AddedAt` and a mapping helper from `Subscription` (contract: response schema).
   - Depends on: T015.
-- [ ] **T023** Create `backend/RSSFeedReader.Api/Controllers/SubscriptionsController.cs` with route `api/subscriptions`, injecting `ISubscriptionStore`.
+- [x] **T023** Create `backend/RSSFeedReader.Api/Controllers/SubscriptionsController.cs` with route `api/subscriptions`, injecting `ISubscriptionStore`.
   - Depends on: T016, T021, T022.
-- [ ] **T024** Implement `POST /api/subscriptions`: validate that `Url` is not null/empty/whitespace → HTTP 400 `{ "error": "Feed URL is required." }` (FR-003).
+- [x] **T024** Implement `POST /api/subscriptions`: validate that `Url` is not null/empty/whitespace → HTTP 400 `{ "error": "Feed URL is required." }` (FR-003).
   - Depends on: T023.
-- [ ] **T025** Extend `POST /api/subscriptions` validation: reject trimmed URLs longer than 2,048 characters → HTTP 400 `{ "error": "Feed URL must be 2048 characters or fewer." }` (FR-015).
+- [x] **T025** Extend `POST /api/subscriptions` validation: reject trimmed URLs longer than 2,048 characters → HTTP 400 `{ "error": "Feed URL must be 2048 characters or fewer." }` (FR-015).
   - Depends on: T024.
-- [ ] **T026** Implement the success path of `POST /api/subscriptions`: store via `ISubscriptionStore.Add`, return HTTP 201 with `SubscriptionResponse` and a `Location` header (FR-001, FR-011, FR-012).
+- [x] **T026** Implement the success path of `POST /api/subscriptions`: store via `ISubscriptionStore.Add`, return HTTP 201 with `SubscriptionResponse` and a `Location` header (FR-001, FR-011, FR-012).
   - Depends on: T024, T025.
-- [ ] **T027** [P] Create `frontend/RSSFeedReader.UI/Models/SubscriptionResponse.cs` mirroring the API response schema.
-- [ ] **T028** Create `frontend/RSSFeedReader.UI/Services/ISubscriptionApiClient.cs` declaring `Task<IReadOnlyList<SubscriptionResponse>> GetSubscriptionsAsync()` and `Task<SubscriptionResponse> AddSubscriptionAsync(string url)`.
+- [x] **T027** [P] Create `frontend/RSSFeedReader.UI/Models/SubscriptionResponse.cs` mirroring the API response schema.
+- [x] **T028** Create `frontend/RSSFeedReader.UI/Services/ISubscriptionApiClient.cs` declaring `Task<IReadOnlyList<SubscriptionResponse>> GetSubscriptionsAsync()` and `Task<SubscriptionResponse> AddSubscriptionAsync(string url)`.
   - Depends on: T027.
-- [ ] **T029** Create `frontend/RSSFeedReader.UI/Services/SubscriptionApiClient.cs` implementing the interface over the configured `HttpClient`, translating non-success responses into a descriptive exception message (FR-013, research R9).
+- [x] **T029** Create `frontend/RSSFeedReader.UI/Services/SubscriptionApiClient.cs` implementing the interface over the configured `HttpClient`, translating non-success responses into a descriptive exception message (FR-013, research R9).
   - Depends on: T013, T028.
-- [ ] **T030** Register `ISubscriptionApiClient` → `SubscriptionApiClient` in `frontend/RSSFeedReader.UI/Program.cs`.
+- [x] **T030** Register `ISubscriptionApiClient` → `SubscriptionApiClient` in `frontend/RSSFeedReader.UI/Program.cs`.
   - Depends on: T029.
-- [ ] **T031** Create `frontend/RSSFeedReader.UI/Pages/Subscriptions.razor` with `@page "/"`, a page heading, and the injected `ISubscriptionApiClient`.
+- [x] **T031** Create `frontend/RSSFeedReader.UI/Pages/Subscriptions.razor` with `@page "/"`, a page heading, and the injected `ISubscriptionApiClient`.
   - Depends on: T009, T030.
-- [ ] **T032** Add the add-subscription form to `Subscriptions.razor`: a text input bound to a field and an "Add Subscription" button (FR-001).
+- [x] **T032** Add the add-subscription form to `Subscriptions.razor`: a text input bound to a field and an "Add Subscription" button (FR-001).
   - Depends on: T031.
-- [ ] **T033** Implement client-side blank validation in `Subscriptions.razor`: block submission and show an inline validation message for empty/whitespace-only input (FR-004, US1 scenario 4).
+- [x] **T033** Implement client-side blank validation in `Subscriptions.razor`: block submission and show an inline validation message for empty/whitespace-only input (FR-004, US1 scenario 4).
   - Depends on: T032.
-- [ ] **T034** Implement the add handler: call `AddSubscriptionAsync`, and on success clear the input and refresh the displayed list immediately (FR-005, FR-006, US1 scenarios 2, 3, 5).
+- [x] **T034** Implement the add handler: call `AddSubscriptionAsync`, and on success clear the input and refresh the displayed list immediately (FR-005, FR-006, US1 scenarios 2, 3, 5).
   - Depends on: T032, T033.
-- [ ] **T035** Implement error handling in `Subscriptions.razor`: catch client exceptions and API failures, show a friendly alert, and leave the list unchanged (FR-013, US1 scenario 6).
+- [x] **T035** Implement error handling in `Subscriptions.razor`: catch client exceptions and API failures, show a friendly alert, and leave the list unchanged (FR-013, US1 scenario 6).
   - Depends on: T034.
-- [ ] **T036** Disable the Add button while a request is in flight to prevent duplicate submissions.
+- [x] **T036** Disable the Add button while a request is in flight to prevent duplicate submissions.
   - Depends on: T034.
-- [ ] **T037** Build gate: `dotnet build RSSFeedReader.sln` completes with 0 errors.
+- [x] **T037** Build gate: `dotnet build RSSFeedReader.slnx` completes with 0 errors.
   - Depends on: T021-T036.
-- [ ] **T038** Verify US1 acceptance scenarios 1-6 manually in the browser per quickstart.md steps 1-4 and 7.
+- [x] **T038** Verify US1 acceptance scenarios 1-6 manually in the browser per quickstart.md steps 1-4 and 7.
   - Depends on: T037.
 
 **Checkpoint**: User Story 1 is independently testable and complete.
@@ -101,25 +101,25 @@
 **Goal**: The subscription list is retrieved from the backend and displayed in insertion order.
 **Independent test**: Add two subscriptions, reload the page, and confirm both are retrieved and displayed in order.
 
-- [ ] **T039** Implement `GET /api/subscriptions` in `SubscriptionsController`: return HTTP 200 with all subscriptions mapped to `SubscriptionResponse`, preserving insertion order (FR-002, FR-008, FR-009).
+- [x] **T039** Implement `GET /api/subscriptions` in `SubscriptionsController`: return HTTP 200 with all subscriptions mapped to `SubscriptionResponse`, preserving insertion order (FR-002, FR-008, FR-009).
   - Depends on: T023.
-- [ ] **T040** Implement `GetSubscriptionsAsync` in `SubscriptionApiClient`, returning an empty list rather than null when no subscriptions exist.
+- [x] **T040** Implement `GetSubscriptionsAsync` in `SubscriptionApiClient`, returning an empty list rather than null when no subscriptions exist.
   - Depends on: T029, T039.
-- [ ] **T041** Load subscriptions in `Subscriptions.razor` `OnInitializedAsync` and store them in component state (FR-008, US2 scenarios 1 and 4).
+- [x] **T041** Load subscriptions in `Subscriptions.razor` `OnInitializedAsync` and store them in component state (FR-008, US2 scenarios 1 and 4).
   - Depends on: T031, T040.
-- [ ] **T042** Render the subscription list in `Subscriptions.razor` (URL plus added timestamp), preserving order newest last (FR-002, FR-009).
+- [x] **T042** Render the subscription list in `Subscriptions.razor` (URL plus added timestamp), preserving order newest last (FR-002, FR-009).
   - Depends on: T041.
-- [ ] **T043** Add the empty-state message ("No subscriptions yet. Add a feed URL to get started.") shown only when the list is empty and loading has finished (FR-007, US1 scenario 1).
+- [x] **T043** Add the empty-state message ("No subscriptions yet. Add a feed URL to get started.") shown only when the list is empty and loading has finished (FR-007, US1 scenario 1).
   - Depends on: T042.
-- [ ] **T044** Add a loading indicator shown while the initial retrieval is in flight, so an incorrect empty state is never displayed (US2 scenario 2).
+- [x] **T044** Add a loading indicator shown while the initial retrieval is in flight, so an incorrect empty state is never displayed (US2 scenario 2).
   - Depends on: T041, T043.
-- [ ] **T045** Add retrieval error handling: if `GetSubscriptionsAsync` fails, show a friendly message instead of an empty state (FR-013).
+- [x] **T045** Add retrieval error handling: if `GetSubscriptionsAsync` fails, show a friendly message instead of an empty state (FR-013).
   - Depends on: T041.
-- [ ] **T046** Confirm that the add handler refreshes the list from state without a full page reload (FR-005, US2 scenario 3).
+- [x] **T046** Confirm that the add handler refreshes the list from state without a full page reload (FR-005, US2 scenario 3).
   - Depends on: T034, T042.
-- [ ] **T047** Build gate: `dotnet build RSSFeedReader.sln` completes with 0 errors.
+- [x] **T047** Build gate: `dotnet build RSSFeedReader.slnx` completes with 0 errors.
   - Depends on: T039-T046.
-- [ ] **T048** Verify US2 acceptance scenarios 1-5 manually per quickstart.md steps 5, 6, and 8.
+- [x] **T048** Verify US2 acceptance scenarios 1-5 manually per quickstart.md steps 5, 6, and 8.
   - Depends on: T047.
 
 **Checkpoint**: User Story 2 is complete; the MVP (add + list) is fully functional.
@@ -128,12 +128,12 @@
 
 ## Phase 5: Polish and verification
 
-- [ ] **T049** [P] Update the repository `README.md` with prerequisites, build commands, run commands for both applications, the port/CORS configuration table, and the MVP scope statement.
-- [ ] **T050** [P] Verify the API contract directly with the curl commands in quickstart.md (200 on GET, 201 on valid POST, 400 on blank POST).
+- [x] **T049** [P] Update the repository `README.md` with prerequisites, build commands, run commands for both applications, the port/CORS configuration table, and the MVP scope statement.
+- [x] **T050** [P] Verify the API contract directly with the curl commands in quickstart.md (200 on GET, 201 on valid POST, 400 on blank POST).
   - Depends on: T037, T047.
-- [ ] **T051** Run both applications and walk through every acceptance scenario in spec.md; confirm zero unhandled errors in the browser console (SC-006, SC-007).
+- [x] **T051** Run both applications and walk through every acceptance scenario in spec.md; confirm zero unhandled errors in the browser console (SC-006, SC-007).
   - Depends on: T048.
-- [ ] **T052** Final build gate and commit: `dotnet build RSSFeedReader.sln` with 0 errors, then commit the MVP implementation.
+- [x] **T052** Final build gate and commit: `dotnet build RSSFeedReader.slnx` with 0 errors, then commit the MVP implementation.
   - Depends on: T049-T051.
 
 ---
@@ -178,3 +178,5 @@ Because User Story 1 and User Story 2 are both P1 and jointly define "MVP workin
 | FR-014 | T010, T011, T012, T014 |
 | FR-015 | T025 |
 | FR-016 | (no fetching implemented anywhere - verified in T051) |
+
+

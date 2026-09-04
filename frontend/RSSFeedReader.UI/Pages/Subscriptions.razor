@@ -1,0 +1,141 @@
+@page "/"
+@using RSSFeedReader.UI.Models
+@using RSSFeedReader.UI.Services
+@inject ISubscriptionApiClient ApiClient
+
+<PageTitle>Subscriptions</PageTitle>
+
+<h1>RSS Feed Subscriptions</h1>
+
+<p class="text-muted">
+    Add a feed URL to build your subscription list. Subscriptions are stored in memory and are cleared when the service restarts.
+</p>
+
+<div class="row g-2 align-items-start mb-3">
+    <div class="col-sm-8">
+        <input class="form-control"
+               type="text"
+               placeholder="https://devblogs.microsoft.com/dotnet/feed/"
+               aria-label="Feed URL"
+               @bind="feedUrl"
+               @bind:event="oninput"
+               @onkeydown="HandleKeyDownAsync" />
+    </div>
+    <div class="col-sm-4">
+        <button class="btn btn-primary" @onclick="AddSubscriptionAsync" disabled="@isSubmitting">
+            @(isSubmitting ? "Adding..." : "Add Subscription")
+        </button>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(validationMessage))
+{
+    <div class="alert alert-warning" role="alert">@validationMessage</div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger" role="alert">@errorMessage</div>
+}
+
+@if (isLoading)
+{
+    <p><em>Loading subscriptions...</em></p>
+}
+else if (subscriptions.Count == 0)
+{
+    <p><em>No subscriptions yet. Add a feed URL to get started.</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Feed URL</th>
+                <th scope="col">Added</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var subscription in subscriptions)
+            {
+                <tr>
+                    <td>@subscription.Url</td>
+                    <td>@subscription.AddedAt.ToLocalTime().ToString("g")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private readonly List<SubscriptionResponse> subscriptions = new();
+
+    private string feedUrl = string.Empty;
+    private string? validationMessage;
+    private string? errorMessage;
+    private bool isLoading = true;
+    private bool isSubmitting;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSubscriptionsAsync();
+    }
+
+    private async Task LoadSubscriptionsAsync()
+    {
+        isLoading = true;
+        errorMessage = null;
+
+        try
+        {
+            var loaded = await ApiClient.GetSubscriptionsAsync();
+            subscriptions.Clear();
+            subscriptions.AddRange(loaded);
+        }
+        catch (SubscriptionApiException ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task HandleKeyDownAsync(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter")
+        {
+            await AddSubscriptionAsync();
+        }
+    }
+
+    private async Task AddSubscriptionAsync()
+    {
+        validationMessage = null;
+        errorMessage = null;
+
+        if (string.IsNullOrWhiteSpace(feedUrl))
+        {
+            validationMessage = "Enter a feed URL before adding a subscription.";
+            return;
+        }
+
+        isSubmitting = true;
+
+        try
+        {
+            var created = await ApiClient.AddSubscriptionAsync(feedUrl.Trim());
+            subscriptions.Add(created);
+            feedUrl = string.Empty;
+        }
+        catch (SubscriptionApiException ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+}
